@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lebbnb - Premium Real Estate Portfolio Website
 
-## Getting Started
+A modern, full-stack real estate portfolio website built with Next.js 16, TypeScript, and Tailwind CSS, featuring a powerful admin panel for content management.
 
-First, run the development server:
+## 🌟 Features
 
+### Public Website
+- **Modern Landing Page** with animated hero section and search functionality
+- **Properties Gallery** with advanced filtering (location, price, property type)
+- **Property Detail Pages** with image galleries and comprehensive information
+- **About Us Page** showcasing company mission, vision, values, and team
+- **Contact Form** with rate limiting and validation
+- **Responsive Design** optimized for all devices
+- **Smooth Animations** using Framer Motion
+- **Green Color Scheme** with professional aesthetics
+
+### Admin Panel
+- **Dashboard** with statistics and quick actions
+- **Properties Management** - Full CRUD operations for properties
+- **Contact Messages** - View and manage customer inquiries
+- **Content Management** for About Us and Home page
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ installed
+- Backend API running (see Lebbnb-backend folder)
+- MongoDB database configured
+
+### Installation
+
+1. **Install dependencies:**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Configure environment:**
+Create `.env.local` file:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Start development server:**
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Open browser:**
+Navigate to [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+## 📋 Available Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎨 Color Scheme
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Primary Green:** `#2d6a4f`
+- **Accent Green:** `#52b788`
+- **Background:** White and soft grays
 
-## Deploy on Vercel
+## 📁 Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/              # Next.js pages
+│   ├── admin/       # Admin panel
+│   ├── properties/  # Property pages
+│   ├── about/       # About page
+│   └── contact/     # Contact page
+├── components/      # Reusable components
+├── lib/            # API client
+└── types/          # TypeScript types
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔗 Backend Integration
+
+This frontend connects to the Lebbnb backend API. Ensure the backend is running on port 5000.
+
+See `Lebbnb-backend/API_DOCUMENTATION.md` for API details.
+
+## 📧 Support
+
+For issues or questions, refer to the backend documentation or contact the development team.
+
+---
+
+**Built with ❤️ using Next.js 16, TypeScript, and Tailwind CSS**
