@@ -18,32 +18,34 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      const response = await axios.post(`${API_URL}/auth/login`, formData, {
-        withCredentials: true, // Important for cookies
-      });
+  try {
+    const response = await axios.post(`${API_URL}/auth/login`, formData, {
+      withCredentials: true,
+    });
 
-      if (response.data.success) {
-        // Store access token in localStorage as backup
-        if (response.data.data.accessToken) {
-          localStorage.setItem('accessToken', response.data.data.accessToken);
-        }
-        
-        toast.success('Login successful!');
-        router.push('/admin');
+    console.log('Login response:', response.data); // Add this
+    
+    if (response.data.success) {
+      if (response.data.data.accessToken) {
+        localStorage.setItem('accessToken', response.data.data.accessToken);
       }
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Login failed. Please try again.';
-      toast.error(message);
-    } finally {
-      setIsLoading(false);
+      
+      toast.success('Login successful!');
+      console.log('Redirecting to /admin'); // Add this
+      router.push('/admin');
     }
-  };
-
+  } catch (error: any) {
+    console.error('Login error:', error); // Add this
+    const message = error.response?.data?.message || 'Login failed. Please try again.';
+    toast.error(message);
+  } finally {
+    setIsLoading(false);
+  }
+};
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-[#2f4222] py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
