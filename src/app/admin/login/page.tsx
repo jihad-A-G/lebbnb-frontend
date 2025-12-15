@@ -23,9 +23,7 @@ export default function AdminLoginPage() {
   setIsLoading(true);
 
   try {
-    const response = await axios.post(`${API_URL}/auth/login`, formData, {
-      withCredentials: true,
-    });
+    const response = await axios.post(`${API_URL}/auth/login`, formData);
     
     if (response.data.success) {
       if (response.data.data.accessToken) {
@@ -34,7 +32,7 @@ export default function AdminLoginPage() {
       
       toast.success('Login successful!');
       
-      // Use window.location for hard redirect to ensure cookies are properly set
+      // Redirect to admin dashboard
       setTimeout(() => {
         window.location.href = '/admin';
       }, 500);

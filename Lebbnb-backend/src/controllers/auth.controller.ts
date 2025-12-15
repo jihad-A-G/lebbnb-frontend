@@ -4,8 +4,6 @@ import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
-  setTokenCookies,
-  clearTokenCookies,
 } from '../utils/jwt.utils';
 
 /**
@@ -149,9 +147,6 @@ export const loginAdmin = async (
     admin.lastLogin = new Date();
     await admin.save();
 
-    // Set cookies
-    setTokenCookies(res, accessToken, refreshToken);
-
     res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -163,7 +158,8 @@ export const loginAdmin = async (
           role: admin.role,
           lastLogin: admin.lastLogin,
         },
-        accessToken, // Also send in response body for clients that can't use cookies
+        accessToken,
+        refreshToken,
       },
     });
   } catch (error: any) {
@@ -188,9 +184,6 @@ export const logoutAdmin = async (
         $unset: { refreshToken: 1 },
       });
     }
-
-    // Clear cookies
-    clearTokenCookies(res);
 
     res.status(200).json({
       success: true,
@@ -266,14 +259,12 @@ export const refreshAccessToken = async (
     admin.refreshToken = newRefreshToken;
     await admin.save();
 
-    // Set new cookies
-    setTokenCookies(res, newAccessToken, newRefreshToken);
-
     res.status(200).json({
       success: true,
       message: 'Token refreshed successfully',
       data: {
         accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
       },
     });
   } catch (error: any) {
@@ -378,9 +369,6 @@ export const changePassword = async (
     // Clear refresh token (force re-login)
     admin.refreshToken = undefined;
     await admin.save();
-
-    // Clear cookies
-    clearTokenCookies(res);
 
     res.status(200).json({
       success: true,

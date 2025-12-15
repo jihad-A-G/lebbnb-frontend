@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { Response } from 'express';
 
 interface TokenPayload {
   id: string;
@@ -71,48 +70,4 @@ export const verifyRefreshToken = (token: string): DecodedToken => {
   }
 };
 
-// Set token cookies with secure options
-export const setTokenCookies = (
-  res: Response,
-  accessToken: string,
-  refreshToken: string
-): void => {
-  const isProduction = process.env.NODE_ENV === 'production';
 
-  // Access token cookie (httpOnly, secure in production)
-  res.cookie('accessToken', accessToken, {
-    httpOnly: true, // Prevents XSS attacks
-    secure: isProduction, // HTTPS only in production
-    sameSite: 'strict', // CSRF protection
-    maxAge: 15 * 60 * 1000, // 15 minutes
-    path: '/',
-  });
-
-  // Refresh token cookie (httpOnly, secure in production)
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    path: '/',
-  });
-};
-
-// Clear token cookies
-export const clearTokenCookies = (res: Response): void => {
-  res.cookie('accessToken', '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 0,
-    path: '/',
-  });
-
-  res.cookie('refreshToken', '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 0,
-    path: '/',
-  });
-};

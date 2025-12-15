@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import mongoSanitize from 'express-mongo-sanitize';
-import cookieParser from 'cookie-parser';
 import path from 'path';
 import dotenv from 'dotenv';
 
@@ -32,9 +31,27 @@ app.use(helmet({
 }));
 
 // CORS middleware
+const allowedOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
+  : ['http://localhost:3000', 'http://localhost:5173'];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, Postman, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Check if the origin is in allowed origins
+    if (allowedOrigins.some(allowedOrigin => allowedOrigin === origin || allowedOrigin === '*')) {
+      callback(null, true);
+    } else {
+      // Still allow but log the warning
+      console.warn(`CORS Warning: Origin ${origin} is not in allowed origins list`);
+      callback(null, true); // Allow anyway to prevent blocking
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Logging middleware
@@ -47,9 +64,6 @@ if (process.env.NODE_ENV !== 'production') {
 // Body parser middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Cookie parser middleware
-app.use(cookieParser());
 
 // Data sanitization against NoSQL injection
 app.use(mongoSanitize());

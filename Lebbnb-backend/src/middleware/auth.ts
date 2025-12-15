@@ -24,16 +24,18 @@ export const authenticate = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    // Get token from cookies or Authorization header
-    let token = req.cookies?.accessToken;
-
-    if (!token) {
-      // Check Authorization header as fallback
-      const authHeader = req.headers.authorization;
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        token = authHeader.substring(7);
-      }
+    // Get token from Authorization header only
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({
+        success: false,
+        message: 'Authentication required. No token provided.',
+      });
+      return;
     }
+
+    const token = authHeader.substring(7);
 
     if (!token) {
       res.status(401).json({

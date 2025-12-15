@@ -1,34 +1,35 @@
 import nodemailer from 'nodemailer';
 
-// Create email transporter
+// Create email transporter - Simple Gmail configuration
 export const createTransporter = () => {
-  // For development, you can use ethereal.email (fake SMTP)
-  // For production, use your actual SMTP settings (Gmail, SendGrid, etc.)
+  const gmailUser = process.env.GMAIL_USER || 'jihadabdlghani@gmail.com';
+  const gmailPass = process.env.GMAIL_APP_PASSWORD;
   
-  if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    // Production configuration
-    return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT || '587'),
-      secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-  } else {
-    // Development fallback - logs to console
-    console.warn('⚠️  Email credentials not configured. Emails will be logged to console.');
-    return nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'ethereal.user@ethereal.email',
-        pass: 'ethereal.pass',
-      },
-    });
+  if (!gmailPass) {
+    console.warn('⚠️  GMAIL_APP_PASSWORD not configured. Email sending will fail.');
+    console.warn('⚠️  Get your Gmail App Password from: https://myaccount.google.com/apppasswords');
   }
+  
+  // Simple Gmail configuration
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: gmailUser,
+      pass: gmailPass,
+    },
+  });
+  
+  /* Advanced SMTP Configuration (commented out - use if you need custom settings)
+  return nodemailer.createTransporter({
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT || '587'),
+    secure: process.env.EMAIL_SECURE === 'true',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+  */
 };
 
 // Send contact notification email
@@ -41,11 +42,12 @@ export const sendContactNotification = async (contactData: {
 }) => {
   const transporter = createTransporter();
   
-  const companyEmail = process.env.COMPANY_EMAIL || 'jihadabdlghani@gmail.com';
+  const gmailUser = process.env.GMAIL_USER || 'jihadabdlghani@gmail.com';
+  const companyName = process.env.COMPANY_NAME || 'Lebbnb';
   
   const mailOptions = {
-    from: `"${process.env.COMPANY_NAME || 'Lebbnb'}" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
-    to: companyEmail,
+    from: `"${companyName}" <${gmailUser}>`,
+    to: gmailUser, // Send to your own email
     subject: `New Contact Form Submission from ${contactData.name}`,
     html: `
       <!DOCTYPE html>
@@ -144,13 +146,13 @@ export const sendContactReply = async (contactData: {
 }) => {
   const transporter = createTransporter();
   
-  const companyEmail = process.env.COMPANY_EMAIL || 'jihadabdlghani@gmail.com';
+  const gmailUser = process.env.GMAIL_USER || 'jihadabdlghani@gmail.com';
   const companyName = process.env.COMPANY_NAME || 'Lebbnb';
   
   const mailOptions = {
-    from: `"${companyName}" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+    from: `"${companyName}" <${gmailUser}>`,
     to: contactData.email,
-    replyTo: companyEmail,
+    replyTo: gmailUser,
     subject: `Re: ${contactData.subject}`,
     html: `
       <!DOCTYPE html>
@@ -194,7 +196,7 @@ export const sendContactReply = async (contactData: {
             </div>
             <div class="footer">
               <p>This email was sent by ${companyName}</p>
-              <p>Email: <a href="mailto:${companyEmail}">${companyEmail}</a></p>
+              <p>Email: <a href="mailto:${gmailUser}">${gmailUser}</a></p>
             </div>
           </div>
         </body>
@@ -218,7 +220,7 @@ If you have any further questions, please don't hesitate to contact us.
 Best regards,
 ${companyName} Team
 
-Email: ${companyEmail}
+Email: ${gmailUser}
     `.trim(),
   };
 
