@@ -26,8 +26,6 @@ export default function AdminLoginPage() {
     const response = await axios.post(`${API_URL}/auth/login`, formData, {
       withCredentials: true,
     });
-
-    console.log('Login response:', response.data); // Add this
     
     if (response.data.success) {
       if (response.data.data.accessToken) {
@@ -35,11 +33,13 @@ export default function AdminLoginPage() {
       }
       
       toast.success('Login successful!');
-      console.log('Redirecting to /admin'); // Add this
-      router.replace('/admin');
+      
+      // Use window.location for hard redirect to ensure cookies are properly set
+      setTimeout(() => {
+        window.location.href = '/admin';
+      }, 500);
     }
   } catch (error: any) {
-    console.error('Login error:', error); // Add this
     const message = error.response?.data?.message || 'Login failed. Please try again.';
     toast.error(message);
   } finally {
