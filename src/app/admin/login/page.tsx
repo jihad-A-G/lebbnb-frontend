@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
       
       toast.success('Login successful!');
       console.log('Redirecting to /admin'); // Add this
-      router.push('/admin');
+      router.replace('/admin');
     }
   } catch (error: any) {
     console.error('Login error:', error); // Add this
